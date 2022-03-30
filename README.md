@@ -45,6 +45,7 @@ Los resultados se deben actualizar con lo que devuelva la api.
 
 ### Precauciones
 
-El hook `useEffect` se está utilizando para que al entrar en la home haya unos resultados iniciales.
-Tendrás que valorar si el hook sigue siendo necesario cuando implementes las features que se piden.
-Si no te resulta muy familiar el hook tienes que leer un poco sobre él y como manejar peticiones asíncronas en su interior, ya que un mal uso puede dar lugar a bucles infinitos.
+- El hook `useEffect` se está utilizando para que al entrar en la home haya unos resultados iniciales.
+  Tendrás que valorar si el hook sigue siendo necesario cuando implementes las features que se piden.
+  Si no te resulta muy familiar el hook tienes que leer un poco sobre él y como manejar peticiones asíncronas en su interior, ya que un mal uso puede dar lugar a bucles infinitos.
+- La api de OMDB devuelve dos veces la misma película al buscar con la palabra "king". Eso hace que cuando se pintan esas primeras 10 películas haya un error en la consola porque encuentra dos items con la misma key. Alguna idea de como gestionarlo?
