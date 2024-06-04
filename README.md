@@ -27,21 +27,10 @@ Esto es porque hace una petición inicial a la api con el parámetro de búsqued
 const response = await fetch('http://www.omdbapi.com/?apikey=a461e386&s=king')
 ```
 
-### Primera tarea.
+### Objetivo.
 
 Queremos buscar en la api de OMDB lo que se escriba en la caja de búsqueda.
 Debes hacer que en lugar de pasar el parámetro de búsqueda `king` hardcodeado, ese parámetro sea lo que haya en el input cuando se haga click en el botón `Search`.
-
-### Segunda tarea.
-
-La api devuelve los resultados de 10 en 10. Acepta un parámetro `page` para indicar la página que quieres que devuelva en los resultados. Por ejemplo:
-
-```
-const response = await fetch('http://www.omdbapi.com/?apikey=a461e386&s=king&page=5')
-```
-
-Queremos que implementes los click en las flechas de la derecha e izquierda de manera que al clickar en la derecha se incremente en 1 el parámetro `page`, y clickando en la izquierda se decremente en 1.
-Los resultados se deben actualizar con lo que devuelva la api.
 
 ### Precauciones
 
