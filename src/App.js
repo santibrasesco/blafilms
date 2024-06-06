@@ -1,57 +1,72 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import './App.css'
-import placeholderImg from './placeholder.png'
 import { ReactComponent as ChevronLeft } from './chevron-left.svg'
 import { ReactComponent as ChevronRight } from './chevron-right.svg'
+import { MovieList } from './components/MovieList'
+import { SearchBar } from './components/SearchBar'
+import { useMoviesFetch } from './hooks/useMoviesFetch'
 
 function App() {
   const [searchResult, setSearchResult] = useState()
+  const [searchParams, setSearchParams] = useState({
+    filter: '',
+    page: 1,
+  })
+  // evita el fetch inicial
+  const [shouldFetch, setShouldFetch] = useState(false)
+
+  const resultData = useMoviesFetch(searchParams, shouldFetch)
 
   useEffect(() => {
-    const search = async () => {
-      const response = await fetch(
-        'http://www.omdbapi.com/?apikey=a461e386&s=king',
-      )
+    setSearchResult(resultData)
+  }, [resultData])
 
-      const data = await response.json()
+  const handleSearch = async (inputText, newPage) => {
+    const { filter, page } = searchParams
+    const validPage =
+      searchResult &&
+      newPage > 0 &&
+      newPage <= Math.ceil(searchResult.totalResults / 10)
 
-      if (!searchResult) {
-        setSearchResult(data)
-      }
+    const filterChanged = filter !== inputText
+    const pageChanged = page !== newPage && validPage
+
+    if (filterChanged || pageChanged) {
+      setSearchParams({
+        filter: inputText,
+        page: pageChanged ? newPage : 1,
+      })
+      setShouldFetch(true)
+    } else {
+      setShouldFetch(false)
     }
-
-    search()
-  })
+  }
 
   return (
     <div className="App">
-      <div className="search">
-        <input type="text" placeholder="Search..." />
-        <button>Search</button>
-      </div>
+      <SearchBar
+        handleSearch={filter => {
+          handleSearch(filter, searchParams.page)
+        }}
+      />
       {!searchResult ? (
         <p>No results yet</p>
       ) : (
         <div className="search-results">
           <div className="chevron">
-            <ChevronLeft />
+            <ChevronLeft
+              onClick={() =>
+                handleSearch(searchParams.filter, searchParams.page - 1)
+              }
+            />
           </div>
-          <div className="search-results-list">
-            {searchResult.Search.map(result => (
-              <div key={result.imdbID} className="search-item">
-                <img
-                  src={result.Poster === 'N/A' ? placeholderImg : result.Poster}
-                  alt="poster"
-                />
-                <div className="search-item-data">
-                  <div className="title">{result.Title}</div>
-                  <div className="meta">{`${result.Type} | ${result.Year}`}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <MovieList movies={searchResult.Search} />
           <div className="chevron">
-            <ChevronRight />
+            <ChevronRight
+              onClick={() =>
+                handleSearch(searchParams.filter, searchParams.page + 1)
+              }
+            />
           </div>
         </div>
       )}
